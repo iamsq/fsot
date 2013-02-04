@@ -16,41 +16,34 @@ Download [Fifty Shades of Teting JAR file] (http://www.google.com)
 ```
 
 ## How to prepare/setup FSOT for use?
-### 1 - Download JAR
-Download the barebone (Fifty Shades of Testing JAR file) [http://www.google.com]
+### 1 - Clone repository or download as zip
 
-### 2 - Download dependencies
+### 2 - Compile
+# Run ant -f build-jar.xml to compile.
+# Dependency libraries are downloaded on the fly via Ivy.
+# A distributable folder "fsot-relase" will be created.
 
-* Download the [dependent libraries zip file] (http://www.google.com)
-* Extract the content from the zip file and place it in the same directory as the JAR file in step 1.
-
-### 3 - Download CodeCover
-
-* Download the [CodeCover tarball] (http://codecover.org/documentation/install.html)
-* Extract the content of the tarball and note the path.
-
-### 4 - Update `ant-codecover.xml`
-Edit the `ant-codecover.xml` found in ______________, update the value of `codecoverDir` to the path you noted in step 3 and save the change made.
-
-## How to use FSOT once its setup is complete? (Input)
-
-At the moment FSOT is only capable of running from the console. In order to run FSOT on a project, you need to go the directory of the downloaded FSOT JAR file.
+### 3 - Run fsot
+# At the moment FSOT is only capable of running from the console. In order to run FSOT on a project, you need to go the `fsot-release` folder.
 ``` console
->> cd directory/of/downloaded/fsot/jar/file   # Change directory to the directory of the downloaded FSOT JAR file.
+>> cd fsot-release   # Change directory to the directory of the downloaded FSOT JAR file.
 ```
 Then, you can use FSOT on your project as follows:
 ```
-usage: java -jar FiftyShadesOfTesting.jar -f <path> [-l] [-c <compile-target-name>] [-j <test-target-name>]
-                                [-t <name> | -x <exclude>] [-t <name> | -a] [-h]
-
-  -f,--build-file <path>                    - use given buildfile
-  -l,--list-tests                           - list all junit tests
+usage: fsot -f <path> -c <compile-target-name> -j <test-target-name> -v3|-v4 [options]
+                                
+Compulsory flags:  
+  -f,--build-file <path>                    - ant buildfile of a project  
   -c,--ant-compile <compile-target-name>    - specify ant compile target name
-  -j,--ant-test <test-target-name>          - manually specify ant test target name manually specify an individual
-                                              test class or a list of test classes seperated by commas
-  -a                                        - execute all identified tests [-exclusion list]
-  -x,--exclusion-list <exclude>             - exclusion list - an individual test class or a list of test
-                                              classes seperated by commas
+  -j,--ant-test <test-target-name>          - specify ant test target name   
+  -v3, --JUnit3 OR -v4, --JUnit4            - specify JUnit version used in the project
+  
+Optional flags:
+  -l,--list-tests                           - list all JUnit tests found within the project
+  
+  -t                                        - run an individual test class or a list of test classes seperated by commas
+  -a                                        - execute all identified tests except those specified in exclusion list
+  -x,--exclusion-list <exclude>             - exclusion list - an individual test class or a list of test classes seperated by commas
   -h,--html                                 - generates CodeCover HTML report`)
 ``` 
 
