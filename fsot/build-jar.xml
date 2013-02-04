@@ -1,0 +1,169 @@
+<project name="FSOT" basedir="." default="dist" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<!-- Ivy Properties -->
+	<property name="ivy.install.version" value="2.1.0-rc2" />
+	<condition property="ivy.home" value="${env.IVY_HOME}">
+		<isset property="env.IVY_HOME" />
+	</condition>
+	<property name="ivy.home" value="${user.home}/.ant" />
+	<property name="ivy.jar.dir" value="${ivy.home}/lib" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+
+	<!-- Javac properties -->
+	<property name="target" value="1.6" />
+	<property name="source" value="1.6" />
+	<property name="debuglevel" value="source,lines,vars" />
+
+	<!-- junit properties -->
+	<property name="junit.output.dir" value="junit" />
+
+	<!-- directories -->
+	<property name="src.dir" value="src" />
+	<property name="target.dir" value="target" />
+	<property name="bin.dir" value="${target.dir}/main" />
+	<property name="release.dir" value="fsot-release" />
+	<property name="test.src.dir" value="test" />
+	<property name="test.bin.dir" value="${target.dir}/test" />
+	<property name="lib.dir" value="lib" />
+	<property name="codecover.dir" value="codecover" />
+
+	<!-- jar -->
+	<property name="fsot.jar" value="fsot.jar" />
+	<property name="main.class" value="org.fsot.cli.CLI" />
+
+
+	<!-- paths -->
+	<path id="fsot.lib">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="fsot.classpath">
+		<pathelement location="${bin.dir}" />
+		<path refid="fsot.lib" />
+	</path>
+
+
+	<path id="fsot.test.classpath">
+		<pathelement location="${bin.dir}" />
+		<pathelement location="${test.bin.dir}" />
+		<path refid="fsot.lib" />
+	</path>
+
+	<!-- T A R G E T S -->
+
+	<!-- init -->
+	<target name="init">
+		<delete dir="${lib.dir}" includeemptydirs="true" />
+		<delete dir="${release.dir}" includeemptydirs="true" />
+		<delete dir="${target.dir}" includeemptydirs="true" />
+
+		<mkdir dir="${release.dir}" />
+		<mkdir dir="${bin.dir}" />
+		<mkdir dir="${test.bin.dir}" />
+	</target>
+
+	<!-- ivy retrieve -->
+	<target name="retrieve" depends="init,init-ivy">
+		<!-- auto download ivy -->
+		<ivy:configure />
+		<ivy:retrieve conf="runtime" />
+	</target>
+
+	<!-- compile -->
+	<target name="compile" depends="retrieve">
+		<javac debug="true" debuglevel="${debuglevel}" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}">
+			<src path="${src.dir}" />
+			<classpath refid="fsot.classpath" />
+		</javac>
+		<javac debug="true" debuglevel="${debuglevel}" destdir="${test.bin.dir}" includeantruntime="false" source="${source}" target="${target}">
+			<src path="${test.src.dir}" />
+			<classpath refid="fsot.classpath" />
+		</javac>
+	</target>
+
+
+	<!-- Distribution Jar -->
+	<target name="dist" depends="compile">
+		<!-- include ant-codecover.xml in manifest-->
+		<path id="manifest.withXML">
+			<path refid="fsot.lib" />
+			<pathelement location="ant-codecover.xml" />
+		</path>
+		<manifestclasspath property="manifest.classpath" jarfile="${fsot.jar}">
+			<classpath refid="manifest.withXML" />
+		</manifestclasspath>
+		<!-- create jar -->
+		<jar basedir="${bin.dir}" destfile="${fsot.jar}">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="${manifest.classpath}" />
+			</manifest>
+		</jar>
+
+		<!-- move jar -->
+		<move file="${fsot.jar}" tofile="${release.dir}/${fsot.jar}" />
+		<!-- move libs -->
+		<mkdir dir="${release.dir}/${lib.dir}" />
+		<move file="${lib.dir}" tofile="${release.dir}/${lib.dir}" />
+		<!-- copy codecover libs -->
+		<mkdir dir="${release.dir}/${codecover.dir}" />
+		<copy todir="${release.dir}/${codecover.dir}">
+			<fileset dir="${codecover.dir}" />
+		</copy>
+		<!-- copy ant-codecover.xml and batch scripts-->
+		<copy todir="${release.dir}">
+			<fileset dir=".">
+				<include name="ant-codecover.xml" />
+				<include name="fsot.bat" />
+				<include name="fsot.sh" />
+			</fileset>
+		</copy>
+		<!-- clean up -->
+		<delete dir="${target}" includeemptydirs="true" />
+	</target>
+
+
+
+	<!-- junit test -->
+	<target name="test" depends="compile">
+		<mkdir dir="${junit.output.dir}" />
+		<junit fork="yes" printsummary="withOutAndErr">
+			<formatter type="xml" />
+			<batchtest todir="${junit.output.dir}">
+				<fileset dir="${test.bin.dir}">
+					<include name="**/*Test" />
+				</fileset>
+			</batchtest>
+			<classpath refid="fsot.test.classpath" />
+		</junit>
+	</target>
+	<target name="junitreport">
+		<junitreport todir="${junit.output.dir}">
+			<fileset dir="${junit.output.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.output.dir}" />
+		</junitreport>
+	</target>
+
+
+
+	<!-- Ivy installation -->
+
+
+	<target name="download-ivy" unless="offline">
+		<mkdir dir="${ivy.jar.dir}" />
+		<!-- download Ivy from web site so that it can be used even without any special installation -->
+		<get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+
+	<target name="init-ivy" depends="download-ivy">
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+</project>

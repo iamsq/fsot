@@ -1,0 +1,117 @@
+<project name="MySetTestFramework" default="test" basedir=".">
+
+  <property name="src.dir" value="src"/>
+  <property name="test.dir" value="test"/>
+  <property name="lib.dir" value="lib"/>
+  <property name="build.dir" value="build"/>
+  <property name="doc.dir" value="doc"/>
+  <property name="test.report.dir" value="test-output"/>
+  <property name="javadoc.dir" value="javadoc"/>
+  <property name="debug" value="on"/>
+
+  <property name="javadoc.dir" value="javadoc"/>
+  <property name="zip.dir" value="zip"/>
+
+  <property name="program.main" value="myset.Main"/>
+  <property name="debug" value="on"/>
+
+  <path id="classpath">
+    <pathelement location="${build.dir}"/>
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="clean">
+    <delete dir="${build.dir}" quiet="true"/>
+    <delete dir="${test.report.dir}" quiet="true"/>
+    <delete dir="${javadoc.dir}" quiet="true"/>
+    <delete dir="${zip.dir}" quiet="true"/>
+    <delete dir="${doc.dir}" quiet="true"/>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${test.report.dir}"/>
+    <mkdir dir="${javadoc.dir}"/>
+    <mkdir dir="${zip.dir}"/>
+    <mkdir dir="${doc.dir}"/>
+  </target>
+
+  <target name="compile" depends="init">
+    <javac debug="${debug}"
+           source="1.6"
+           classpathref="classpath"
+           destdir="${build.dir}"
+           includeantruntime="false">
+      <src path="${src.dir}"/>
+      <src path="${test.dir}"/>
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
+
+  <target name="test" depends="compile">
+    <junit fork="true" forkmode="once"
+        haltonfailure="false"
+        haltonerror="false"
+        showoutput="true"
+        printsummary="true">
+     <classpath>
+       <path refid="classpath"/>
+     </classpath>
+     <batchtest todir="${test.report.dir}">
+	  <formatter usefile="false" type="brief" />
+       <formatter type="xml"/>
+	   
+       <fileset dir="${test.dir}">
+         <include name="**/When*.java"/>
+       </fileset>
+     </batchtest>
+    </junit>
+    <junitreport todir="${test.report.dir}">
+      <fileset dir="${test.report.dir}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${test.report.dir}"/>
+    </junitreport>
+  </target>
+  
+  <target name="javadoc" depends="init">
+    <delete dir="${javadoc.dir}" quiet="true"/>
+    <mkdir dir="${javadoc.dir}"/>
+    <javadoc
+      packagenames="myset"
+      sourcepath="${src.dir}"
+      defaultexcludes="yes"
+      destdir="${javadoc.dir}"
+      version="true"
+      use="true"
+      windowtitle="MySet Framework">
+      <link href="http://download.oracle.com/javase/6/docs/api/"/>
+    </javadoc>
+  </target>
+  
+  <target name="run" depends="compile">
+    <java classname="${program.main}"
+          classpathref="classpath"
+          fork="yes">
+       <arg value="-v"/>
+    </java>
+  </target>
+  
+  <target name="zip" depends="javadoc">
+    <zip destfile="${zip.dir}/${ant.project.name}.zip">
+      <zipfileset dir="${src.dir}" prefix="${ant.project.name}/${src.dir}"/>
+      <zipfileset dir="${test.dir}" prefix="${ant.project.name}/${test.dir}"/>
+      <zipfileset dir="${lib.dir}" prefix="${ant.project.name}/${lib.dir}"/>
+      <zipfileset dir="${doc.dir}" prefix="${ant.project.name}/${doc.dir}"/>
+      <zipfileset dir="${javadoc.dir}" prefix="${ant.project.name}/${javadoc.dir}"/>
+      <zipfileset dir="." includes="*.xml" prefix="${ant.project.name}"/>
+    </zip>
+  </target>
+
+  <target name="all" depends="clean,compile,test,javadoc,zip"/>
+
+	<target name="emptyCompile"/>
+	<target name="emptyTest"/>
+</project>
