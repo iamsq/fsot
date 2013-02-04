@@ -4,27 +4,20 @@
 # What is FSOT?
 This project aims to extend current code coverage and testing tools to reduce the amount of time required to regression test large project. A large project will have many tests suites and test cases. However, when only a few lines of the source code are changed, not all the test suites and test cases need to be run again; only the ones that are affected by the changed lines. Fifty Shades of Testing produces a CSV report containing detailed information of which lines of code are affected by which test methods, allowing an automated script/algorithm to only run the tests that are affected and save a considerable amount of time.
 
-# Getting Started
-## Quick Setup
-### 1 - Download JAR
-Download [Fifty Shades of Teting JAR file] (http://www.google.com)
 
-### 2 - Run from the console
-``` console
->> cd directory/of/downloaded/fsot/jar/file   # Change directory to the directory of the downloaded FSOT JAR file.
->> java -jar FSOT-quickie.jar
-```
+## Quick Start
+### 1. Clone repository or download as zip
+- [Clone HTTP] (https://github.com/iamsq/fsot.git)
+- [Clone SSH] (git@github.com:iamsq/fsot.git)
+- [Master branch: Zip file] (https://github.com/iamsq/fsot/archive/master.zip)
 
-## How to prepare/setup FSOT for use?
-### 1 - Clone repository or download as zip
+### 2. Compile
+- Run ant -f build-jar.xml to compile.
+- Dependency libraries are downloaded on the fly via Ivy.
+- A distributable folder "fsot-relase" will be created.
 
-### 2 - Compile
-# Run ant -f build-jar.xml to compile.
-# Dependency libraries are downloaded on the fly via Ivy.
-# A distributable folder "fsot-relase" will be created.
-
-### 3 - Run fsot
-# At the moment FSOT is only capable of running from the console. In order to run FSOT on a project, you need to go the `fsot-release` folder.
+### 3. Run fsot
+At the moment FSOT is only capable of running from the console. In order to run FSOT on a project, you need to go the `fsot-release` folder.
 ``` console
 >> cd fsot-release   # Change directory to the directory of the downloaded FSOT JAR file.
 ```
