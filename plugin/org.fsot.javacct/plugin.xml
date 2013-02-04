@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.xml"
+           	id="org.fsot.javacct.maincontribution">
+           	
+           	<visibility>
+            <objectState name="contentTypeId"
+          	value="org.eclipse.ant.core.antBuildFile" />
+  			</visibility>
+  	
+         <menu
+               label="JavaCCT [Line Coverage]"
+               path="additions"
+               id="org.fsot.javacct.parent">
+            <separator
+                  name="maingroup">
+            </separator>
+         </menu>
+         <action
+               label="Run All Tests"
+               class="org.fsot.javacct.actions.RunAllTests"
+               menubarPath="org.fsot.javacct.parent/maingroup"
+               enablesFor="1"
+               id="org.fsot.javacct.actions.RunAllTests">
+         </action>
+         <action
+               label="Run Selected Tests"
+               class="org.fsot.javacct.actions.RunSelectedTests"
+               menubarPath="org.fsot.javacct.parent/maingroup"
+               enablesFor="1"
+               id="org.fsot.javacct.actions.RunSelectedTests">
+         </action>
+         <action
+               label="List Tests"
+               class="org.fsot.javacct.actions.ListTests"
+               menubarPath="org.fsot.javacct.parent/maingroup"
+               enablesFor="1"
+               id="org.fsot.javacct.actions.ListTests">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
