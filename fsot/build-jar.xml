@@ -27,6 +27,7 @@
 	<property name="test.bin.dir" value="${target.dir}/test" />
 	<property name="lib.dir" value="lib" />
 	<property name="codecover.dir" value="codecover" />
+	<property name="script.dir" value="scripts" />
 
 	<!-- jar -->
 	<property name="fsot.jar" value="fsot.jar" />
@@ -115,14 +116,14 @@
 		</copy>
 		<!-- copy ant-codecover.xml and batch scripts-->
 		<copy todir="${release.dir}">
-			<fileset dir=".">
+			<fileset dir="${script.dir}">
 				<include name="ant-codecover.xml" />
 				<include name="fsot.bat" />
 				<include name="fsot.sh" />
 			</fileset>
 		</copy>
 		<!-- clean up -->
-		<delete dir="${target}" includeemptydirs="true" />
+		<delete dir="${target.dir}" includeemptydirs="true" />
 	</target>
 
 

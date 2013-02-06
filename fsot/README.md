@@ -32,18 +32,17 @@ Compulsory flags:
   -v3, --JUnit3 OR -v4, --JUnit4            - specify JUnit version used in the project
   
 Optional flags:
-  -l,--list-tests                           - list all JUnit tests found within the project
-  
-  -t                                        - run an individual test class or a list of test classes seperated by commas
+  -l,--list-tests                           - list all JUnit tests found within the project  
+  -t                                        - run an individual test class or a list of test classes separated by commas
   -a                                        - execute all identified tests except those specified in exclusion list
-  -x,--exclusion-list <exclude>             - exclusion list - an individual test class or a list of test classes seperated by commas
-  -h,--html                                 - generates CodeCover HTML report`)
+  -x,--exclusion-list <exclude>             - exclusion list - an individual test class or a list of test classes separated by commas
+  -h,--html                                 - generates CodeCover HTML report
 ``` 
 
 ## What is popped out? (Output)
 
 To understand the output produced by FSOT, it is necessary to understand (what kind of coverage items does CodeCover provide) [http://codecover.org/features/coverage.html].
-The output produced by FSOT is a [CSV] (http://en.wikipedia.org/wiki/Comma-separated_values) file that will be under ________________ directory.
+The output produced by FSOT is a [CSV] (http://en.wikipedia.org/wiki/Comma-separated_values) file, named `output.csv`, that will be under `fsot-base` directory within the project.
 The format of the CSV is as follows:
 ### Header
 ```
@@ -62,7 +61,7 @@ For instance, we can see that the test `org.jgap.supergenes.SupergeneInternalPar
 Note that the values under the columns with a source file name as their header (e.g. `org.jgap.BaseGene.java` or `org.jgap.BaseGeneticOperator.java` in the example above) are always `-1` to avoid any confusion.
 
 ### How to find out what `S1`, `B14` etc. are?
-FSOT would be useless if one did not know what the statements in each file actually were. Therefore, another output produced by FSOT is a XML formatted mapping. This file is called `FSOTReportMapping.xml`. This mapping contains a list of all source files, their statements and the start and end offset of those statements in the file.
+FSOT would be useless if one did not know what the statements in each file actually were. Therefore, another output produced by FSOT is a XML formatted mapping. This file is called `mapping.xml` under `fsot-base` directory. This mapping contains a list of all source files, their statements and the start and end offset of those statements in the file.
 
 Below is a partial example of a mapping XML file.
 

@@ -177,14 +177,14 @@ public class CodeCoverRunner {
 	 */
 	private void executeTests() {
 		System.out.println("Running Test 1: " + testClassesToUse[0]);
-		project.setProperty("mainClassName", testClassesToUse[0]);
+		project.setProperty("testClassName", testClassesToUse[0]);
 		project.executeTarget(project.getDefaultTarget());
 
 		if (testClassesToUse.length > 1) {
 			for (int i = 1; i < testClassesToUse.length; i++) {
 				System.out.println("Running Test " + (i + 1) + ": "
 						+ testClassesToUse[i]);
-				project.setProperty("mainClassName", testClassesToUse[i]);
+				project.setProperty("testClassName", testClassesToUse[i]);
 				project.executeTarget("create-log");
 			}
 		}
