@@ -1,5 +1,38 @@
 <project default="create-log-default" >
 
+	<!-- 
+	This Ant script to be called by org.fsot.CodeCoverRunner (CCR).
+	It is meant to work out of the box for most Ant projects, without modifying this script.
+	In the event of an atypical build, you may try modifying the targets and/or overwrite parameters.
+	The parameters and targets are documented below.
+	
+	For Maven projects, you may try mvn ant:ant to generate an equivalent ant build.xml, 
+	and use this file in FSOT. It is currently untested, do try it out and let us know if it works!	
+	
+	CCR retrieves project attributes and pass them to this script as parameters
+	to automate the instrumentation, compilation and execution of tests.
+	
+	The parameters in this script are:
+		- codecoverDir (property): absolute path to codecover, get environment
+									variable when it is set in the shell/batch script
+		- fsot-src (refid to path): A single source root directory, to be used in
+									codecover instrumentation. Codecover only takes in single root
+									directory to instrument at the moment. Modify the
+									"instrument-sources" target below to instrument 2 or more root
+									directories if necessary.
+		- classpathCompile (refid to path): Classpath used to compile the instrumented source
+		- classpathTest (refid to path): Classpath used to run junit tests
+		- testClassName (property): name of a test class to be executed. This property will be
+									overridden mutliple times for running of multiple test classes
+		- junitRunnerToUse (property): takes value of either that of junit3Runner or junit4Runner
+										depending on the junit version used in the project. These runners
+										are from codecover, and it reports coverage at method level.
+										See codecover documentation/source to adapt the TestRunner, otherwise
+										any other custom TestRunner would most likely not work.
+									
+	See the CCR source code for more detail.
+	-->
+
 	<!-- fsot naming convention-->
 	<property name="fsot-base" value="fsot-base" />
 	<property name="instrumentedSourceDir" value="${fsot-base}/instrumented" />
@@ -35,6 +68,8 @@
 
 
 	<target name="instrument-sources" depends="clean">
+		<!-- src-dir property to be set by fsot via refid fsot-src -->
+		<property name="src-dir" refid="fsot-src" />
 		<codecover>
 			<instrument containerId="c" language="java" destination="${instrumentedSourceDir}" charset="utf-8" copyUninstrumented="false">
 				<source dir="${src-dir}">
@@ -66,8 +101,7 @@
 
 
 	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-	<!-- Run source with instrumentation and create log-->
-	<!-- TODO: change to using Junit to run instead of calling Junit directly -->
+	<!-- Run a single junit test against the instrumented program to create coverage log-->
 	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 
@@ -93,6 +127,8 @@
 			<arg value="${testClassName}" />
 		</java>
 		
+		<!-- Setting a flag named after the testClassName, if coverage log file is created.
+			it is used to determine if target "create-log" is to be executed -->
 		 <available file="${fsot-base}/${testClassName}.clf" property="${testClassName}"/>
 	</target>
 

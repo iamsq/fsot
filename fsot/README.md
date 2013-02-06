@@ -19,7 +19,7 @@ This project aims to extend current code coverage and testing tools to reduce th
 ### 3. Run fsot
 At the moment FSOT is only capable of running from the console. In order to run FSOT on a project, you need to go the `fsot-release` folder.
 ``` console
->> cd fsot-release   # Change directory to the directory of the downloaded FSOT JAR file.
+>> cd fsot-release   # Change directory to the FSOT distributable directory
 ```
 Then, you can use FSOT on your project as follows:
 ```
