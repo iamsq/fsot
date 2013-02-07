@@ -21,8 +21,15 @@ public class TestTargetListener implements BuildListener {
 
 	private ClassLoader classloader = null;
 	private Path classpath = null;
-	private String testTarget;
 	private boolean isEnabled = false;
+
+	/**
+	 * Enable or disable this listener
+	 * @param isEnabled 
+	 */
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 
 	/**
 	 * @return the classpath for test or null if none's found (due to absence of
@@ -40,11 +47,7 @@ public class TestTargetListener implements BuildListener {
 		
 		return classloader;
 	}
-
 	
-	public void setTargetJUnit(String target) {
-		testTarget = target;
-	}
 
 	/**
 	 * When enabled, it listens for taskStarted event and process (Custom)JUnit
@@ -104,14 +107,9 @@ public class TestTargetListener implements BuildListener {
 		// does nothing
 	}
 
-	/**
-	 * Enable this listener once the test target has been executed. 
-	 */
+	
 	@Override
-	public void targetStarted(BuildEvent be) {		
-		if (testTarget.equals(be.getTarget().getName())) {
-			isEnabled = true;
-		}
+	public void targetStarted(BuildEvent be) {				
 	}
 
 	@Override

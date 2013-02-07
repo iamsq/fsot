@@ -87,13 +87,9 @@ public class AntProjectModel extends ProjectModel {
 		consoleLogger.setMessageOutputLevel(Project.MSG_INFO);
 		project.addBuildListener(consoleLogger);
 
-		// Add listeners
-		if (testTarget != null) {
-			testListener = new TestTargetListener();
-
-			testListener.setTargetJUnit(testTarget);
-			project.addBuildListener(testListener);
-		}
+		testListener = new TestTargetListener();
+		project.addBuildListener(testListener);
+		
 
 		compileListener = new CompileTargetListener();
 		project.addBuildListener(compileListener);
@@ -124,6 +120,8 @@ public class AntProjectModel extends ProjectModel {
 				project.executeTarget(javacTarget);
 			}
 
+			//enable test listener.
+			testListener.setEnabled(true);
 			project.executeTarget(testTarget);
 
 			project.fireBuildFinished(null);
